@@ -1,0 +1,261 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>Hospital Management System</h1>
+
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'patient_list' %}">Patients</a>
+        <a href="{% url 'doctor_list' %}">Doctors</a>
+        <a href="{% url 'appointment_list' %}">Appointments</a>
+        <a href="{% url 'billing_list' %}">Billing</a>
+        <a href="{% url 'payment_list' %}">Payments</a>
+        <a href="{% url 'medicine_list' %}">Pharmacy</a>
+        <a href="{% url 'laboratory_list' %}">Laboratory</a>
+        <a href="{% url 'activity_log' %}">Activity log</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'settings' %}">Settings</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+</header>
+<section class="welcome">
+    <h2>Welcome, Admin 👋</h2>
+    <p>Hospital Management System Dashboard</p>
+    <h3 id="currentDate"></h3>
+    <h3 id="currentTime"></h3>
+</section>
+<div class="container">
+
+    <h2>Dashboard</h2>
+
+    <div class="dashboard">
+
+        <div class="card">
+            <i class="fas fa-user-injured card-icon"></i>
+            <h3>Total Patients</h3>
+            <h1>{{ total_patients }}</h1>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-user-injured card-icon"></i>
+            <h3>Total Doctors</h3>
+            <h1>{{ total_doctors }}</h1>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-user-injured card-icon"></i>
+            <h3>Total Appointments</h3>
+            <h1>{{ total_appointments }}</h1>
+        </div>
+
+        <div class="card">
+            <h3>Total Bills</h3>
+            <i class="fas fa-user-injured card-icon"></i>
+            <h1>{{ total_bills }}</h1>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-pills card-icon"></i>
+            <h3>Total Medicines</h3>
+            <h1>{{ total_medicines }}</h1>
+        </div>
+
+        <div class="card">
+            <i class="fas fa-flask card-icon"></i>
+            <h3>Total Laboratory Tests</h3>
+            <h1>{{ total_tests }}</h1>
+        </div>
+
+    </div>
+
+    <br><br>
+<div class="charts">
+    <div class="chart-box">
+        <canvas id="hospitalChart"></canvas>
+    </div>
+    <div class="chart-box">
+        <canvas id="pieChart"></canvas>
+    </div>
+
+</div>
+</div>
+<div class="calendar-container">
+    <h2>Appointment Calender</h2>
+    <div id="calendar"></div>
+</div>
+{{ events|json_script:"calendar-events" }}
+<script>
+const ctx = document.getElementById('hospitalChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [
+            'Patients',
+            'Doctors',
+            'Appointments',
+            'Bills',
+            'Medicines',
+            'Laboratory'
+        ],
+        datasets: [{
+            label: 'Hospital Records',
+            data: [
+                {{ total_patients }},
+                {{ total_doctors }},
+                {{ total_appointments }},
+                {{ total_bills }},
+                {{ total_medicines }},
+                {{ total_tests }}
+            ],
+            backgroundColor: [
+                '#3498db',
+                '#2ecc71',
+                '#9b59b6',
+                '#f39c12',
+                '#e74c3c',
+                '#1abc9c'
+            ],
+            borderColor: [
+                '#2980b9',
+                '#27ae60',
+                '#8e44ad',
+                '#d68910',
+                '#c0392b',
+                '#16a085'
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Hospital Management Dashboard',
+                font: {
+                    size: 24
+                }
+            },
+            legend: {
+                display: true
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+function updateDateTime() {
+
+    const now = new Date();
+
+    const date = now.toLocaleDateString();
+
+    const time = now.toLocaleTimeString();
+
+    document.getElementById("currentDate").innerHTML =
+        "📅 Date : " + date;
+
+    document.getElementById("currentTime").innerHTML =
+        "🕒 Time : " + time;
+}
+
+updateDateTime();
+
+setInterval(updateDateTime,1000);
+const pie = document.getElementById('pieChart').getContext('2d');
+
+new Chart(pie,{
+    type:'pie',
+    data:{
+        labels:[
+            'Patients',
+            'Doctors',
+            'Appointments',
+            'Bills',
+            'Medicines',
+            'Laboratory'
+        ],
+        datasets:[{
+            data:[
+                {{ total_patients }},
+                {{ total_doctors }},
+                {{ total_appointments }},
+                {{ total_bills }},
+                {{ total_medicines }},
+                {{ total_tests }}
+            ],
+            backgroundColor:[
+                '#3498db',
+                '#2ecc71',
+                '#9b59b6',
+                '#f39c12',
+                '#e74c3c',
+                '#1abc9c'
+            ]
+        }]
+    },
+    options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+            title:{
+                display:true,
+                text:'Hospital Statistics'
+            },
+            legend:{
+                position:'bottom'
+            }
+        }
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+
+    const events = JSON.parse(
+        document.getElementById("calendar-events").textContent
+    );
+
+    const calendarEl = document.getElementById("calendar");
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+
+        headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay"
+        },
+
+        events: events,
+
+        height: 650
+    });
+
+    calendar.render();
+
+});
+</script>
+
+</body>
+</html>

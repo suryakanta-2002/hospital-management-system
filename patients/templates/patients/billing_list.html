@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Billing</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>Hospital Management System</h1>
+
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'patient_list' %}">Patients</a>
+        <a href="{% url 'doctor_list' %}">Doctors</a>
+        <a href="{% url 'appointment_list' %}">Appointments</a>
+        <a href="{% url 'billing_list' %}">Billing</a>
+        <a href="{% url 'payment_list' %}">Payments</a>
+        <a href="{% url 'medicine_list' %}">Pharmacy</a>
+        <a href="{% url 'laboratory_list' %}">Laboratory</a>
+        <a href="{% url 'activity_log' %}">Activity log</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'settings' %}">Settings</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="container">
+
+<h2>Billing List</h2>
+
+<a href="{% url 'add_billing' %}">
+    <button class="btn">Add Bill</button>
+</a>
+<a href="{% url 'billing_pdf' %}" class="btn">Download PDF</a>
+<a href="{% url 'billing_excel' %}" class="btn">Download Excel</a>
+
+<br><br>
+
+<form method="GET">
+    <input type="text" name="search"
+           placeholder="Search Bill ID or Patient Name"
+           value="{{ search|default:'' }}">
+    <button type="submit">Search</button>
+</form>
+
+<br>
+
+<table border="1" cellpadding="10">
+<tr>
+    <th>Bill ID</th>
+    <th>Patient</th>
+    <th>Doctor</th>
+    <th>Total Amount</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+
+{% for bill in bills %}
+<tr>
+    <td>{{ bill.bill_id }}</td>
+    <td>{{ bill.patient.name }}</td>
+    <td>{{ bill.doctor.name }}</td>
+    <td>{{ bill.total_amount }}</td>
+    <td>{{ bill.payment_status }}</td>
+    <td>
+        <a href="{% url 'edit_billing' bill.id %}">Edit</a>
+        <a href="{% url 'delete_billing' bill.id %}">Delete</a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="6" style="text-align:center;color:red;">
+        No Bills Found
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+
+</body>
+</html>

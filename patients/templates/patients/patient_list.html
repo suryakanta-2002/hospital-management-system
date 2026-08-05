@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient List</title>
+    <link rel="stylesheet"href="{% static 'css/style.css'%}">
+</head>
+<body>
+    <header>
+    <h1>Hospital Management System</h1>
+
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'patient_list' %}">Patients</a>
+        <a href="{% url 'doctor_list' %}">Doctors</a>
+        <a href="{% url 'appointment_list' %}">Appointments</a>
+        <a href="{% url 'billing_list' %}">Billing</a>
+        <a href="{% url 'payment_list' %}">Payments</a>
+        <a href="{% url 'medicine_list' %}">Pharmacy</a>
+        <a href="{% url 'laboratory_list' %}">Laboratory</a>
+        <a href="{% url 'activity_log' %}">Activity log</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'settings' %}">Settings</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+    <h2>Patients List</h2>
+    <a href="{% url 'add_patient' %}"><button class="btn">Add Patient</button></a>
+    <a href="{% url 'patient_pdf' %}" class="btn">Download PDF</a>
+    <a href="{% url 'patient_excel' %}" class="btn">Download Excel</a>
+    <br><br>
+    <form method="GET">
+        <input type="text"
+            name="search"
+            placeholder="Search By Patient Id Or Name" value="{{search|default:''}}">
+        <button type="submit">Search</button>
+    </form>
+    <br>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>patient_id</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Phone</th>
+            <th>Disease</th>
+            <th>Action</th>
+        </tr>
+        {% for patient in patients %}
+        <tr>
+            <td>{{patient.patient_id}}</td>
+            <td>{{patient.name}}</td>
+            <td>{{patient.age}}</td>
+            <td>{{patient.gender}}</td>
+            <td>{{patient.phone}}</td>
+            <td>{{patient.disease}}</td>
+            <td>
+                <a href="{% url 'edit_patient' patient.id %}">Edit</a>
+                <a href="{%url 'delete_patient' patient.id %}">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" style="text-align:center;color:red;font-size:20px;font-weight:bold;">
+                Patient Not Found
+            </td>
+            
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

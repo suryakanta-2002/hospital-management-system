@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Billing</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>Hospital Management System</h1>
+
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'patient_list' %}">Patients</a>
+        <a href="{% url 'doctor_list' %}">Doctors</a>
+        <a href="{% url 'appointment_list' %}">Appointments</a>
+        <a href="{% url 'billing_list' %}">Billing</a>
+    </nav>
+</header>
+
+<div class="container">
+
+<h2>Add / Edit Billing</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit" class="btn">Save Bill</button>
+
+    <a href="{% url 'billing_list' %}">
+        <button type="button">Back</button>
+    </a>
+
+</form>
+
+</div>
+
+</body>
+</html>

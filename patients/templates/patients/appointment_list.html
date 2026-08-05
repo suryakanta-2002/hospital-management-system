@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<header>
+    <h1>Hospital Management System</h1>
+
+    <nav>
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'patient_list' %}">Patients</a>
+        <a href="{% url 'doctor_list' %}">Doctors</a>
+        <a href="{% url 'appointment_list' %}">Appointments</a>
+        <a href="{% url 'billing_list' %}">Billing</a>
+        <a href="{% url 'payment_list' %}">Payments</a>
+        <a href="{% url 'medicine_list' %}">Pharmacy</a>
+        <a href="{% url 'laboratory_list' %}">Laboratory</a>
+        <a href="{% url 'activity_log' %}">Activity log</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'settings' %}">Settings</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<div class="container">
+
+    <h2>Appointment List</h2>
+
+    <a href="{% url 'add_appointment' %}">
+        <button class="btn">Add Appointment</button>
+    </a>
+    <a href="{% url 'appointment_pdf' %}" class="btn">Download PDF</a>
+    <a href="{% url 'appointment_excel' %}" class="btn">Download Excel</a>
+
+    <br><br>
+
+    <form method="GET">
+        <input type="text"
+               name="search"
+               placeholder="Search by Appointment ID, Patient or Doctor"
+               value="{{ search|default:'' }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <br>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Appointment ID</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+
+        {% for appointment in appointments %}
+        <tr>
+            <td>{{ appointment.appointment_id }}</td>
+            <td>{{ appointment.patient.name }}</td>
+            <td>{{ appointment.doctor.name }}</td>
+            <td>{{ appointment.appointment_date }}</td>
+            <td>{{ appointment.appointment_time }}</td>
+            <td>{{ appointment.status }}</td>
+            <td>
+                <a href="{% url 'edit_appointment' appointment.id %}">Edit</a>
+                <a href="{% url 'delete_appointment' appointment.id %}">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" style="text-align:center;color:red;">
+                No Appointment Found
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+</body>
+</html>
